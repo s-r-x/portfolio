@@ -49,7 +49,10 @@ class Thumb extends PureComponent {
   }
   componentWillUnmount() {
     window.removeEventListener('resize', this.resizeHandler);
-    pixiApp.ticker.stop();
+    // another weird pixi bug - when you go to another route and 
+    // go back after a moment pixi ticker doesn't start again! only after a 500 ms delay
+    // wtf actually!
+    //pixiApp.ticker.stop();
     if(isMobile) {
       this.hammer.destroy();
     }
@@ -68,16 +71,18 @@ class Thumb extends PureComponent {
   }
   initFilter() {
     const { activeSlide, slides } = this.props;
-    filter = new PIXI.Filter(null, fragShader, { 
-      texture1: slides[activeSlide],
-      texture2: slides[activeSlide],
-      disp: PIXI.Loader.shared.resources.disp.texture,
-      dispFactor: 0,
-      effectFactor: 1,
-      isNext: 1,
-    });
-    filter.padding = 0;
-    pixiApp.stage.filters = [ filter ];
+    if(!filter) {
+      filter = new PIXI.Filter(null, fragShader, { 
+        texture1: slides[activeSlide],
+        texture2: slides[activeSlide],
+        disp: PIXI.Loader.shared.resources.disp.texture,
+        dispFactor: 0,
+        effectFactor: 1,
+        isNext: 1,
+      });
+      filter.padding = 0;
+      pixiApp.stage.filters = [ filter ];
+    }
 
   }
   componentDidUpdate(prevProps) {
@@ -123,7 +128,6 @@ class Thumb extends PureComponent {
     pixiApp.stage.addChild(graphics);
   }
   render() {
-    const { activeSlide } = this.props;
     return (
       <div className="works--thumb" ref={this.ref}>
       </div>
