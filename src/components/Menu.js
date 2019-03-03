@@ -54,7 +54,7 @@ class Menu extends PureComponent {
     const resizeObserver = new ResizeObserver(_ => this.updateBottomLine(false));
     $lis.forEach($el => resizeObserver.observe($el));
     // give browser some time to calc positions
-    setTimeout(() => this.updateBottomLine(false), 200);
+    setTimeout(() => this.updateBottomLine(false), 275);
   }
   updateBottomLine(needAnimation = true) {
     const $wrap = this.ref.current;
