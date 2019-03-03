@@ -38,7 +38,7 @@ class Menu extends PureComponent {
       this.updateBottomLine();
     });
     const $wrap = this.ref.current;
-    // if there is opened mobile menu we need to close it after a link get clicked
+    // if there is opened mobile menu we need to close it after a link click
     const $lis = [].slice.call(document.querySelectorAll('li'));
     $lis.forEach($li => {
       const $a = $li.querySelector('a');
