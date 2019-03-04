@@ -20,12 +20,12 @@ export default {
     ru: 'Привет',
   },
   about_first_p: {
-    en: 'My name is Ilya. I am a designer and a front-end developer with 3 years of experience.',  
-    ru: 'Меня зовут Илья. Я дизайнер и фронтенд разработчик с трехлетним опытом.',
+    en: 'My name is Ilya. I am a front-end developer with 3 years of experience. Cannot live without react and webpack.',  
+    ru: 'Меня зовут Илья. Я фронтенд разработчик с трехлетним опытом. Жить не могу без реакта и вебпака.',
   },
   about_second_p: {
-    en: 'I create fast, ease-to-use and modern websites. Always open for new projects.',
-    ru: 'Я создаю быстрые, удобные и современные веб-сайты. Всегда открыт для новых проектов.',
+    en: 'Always open for new projects.',
+    ru: 'Всегда открыт для новых проектов.',
   },
   message_email: {
     en: 'Email',
