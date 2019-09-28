@@ -19,7 +19,7 @@ export default [
     },
     desc: {
       ru: 'Салон доставки цветов',
-      en: 'Flower delivery store',
+      en: 'Flower delivery service',
     },
     thumb: '/Aurelia.jpg',
     link: 'http://aurelia.s-r-x.com/',
