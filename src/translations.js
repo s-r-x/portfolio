@@ -20,8 +20,8 @@ export default {
     ru: 'Привет',
   },
   about_first_p: {
-    en: 'My name is Ilya. I am a front-end developer with 3 years of experience. I love React and interesting visual effects.',  
-    ru: 'Меня зовут Илья. Я фронтенд разработчик с трехлетним опытом. Обожаю React и интересные визуальные эффекты.',
+    en: 'My name is Ilya. I am a front-end developer with 4 years of experience. I love React and interesting visual effects.',  
+    ru: 'Меня зовут Илья. Я фронтенд разработчик с четырехлетним опытом. Обожаю React и интересные визуальные эффекты.',
   },
   about_second_p: {
     en: 'Always open for new projects.',

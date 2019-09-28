@@ -30,7 +30,6 @@ function rootReducer(state = initialState, action) {
     case _.CHANGE_ANIMATING_STATE:
       return { ...state, isAnimating: action.payload };
     default:
-      console.warn('unknown action: ' + action.type);
       return state;
   }
 }
