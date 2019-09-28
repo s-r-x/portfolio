@@ -1,80 +1,93 @@
 export default [
   {
-    "title": {
-      "ru": "Аврелия",
-      "en": "Aurelia"
+    title: {
+      ru: 'Simpo',
+      en: 'Simpo',
     },
-    "desc": {
-      "ru": "Салон доставки цветов",
-      "en": "Flower delivery store"
+    desc: {
+      ru: 'Сервис красоты',
+      en: 'Beauty service',
     },
-    "thumb": "/Aurelia.jpg",
-    "link": "http://aurelia.s-r-x.com/",
-    "asset_key": "aurelia"
+    thumb: '/Simpo.jpg',
+    link: 'https://simpo.online',
+    asset_key: 'simpo',
   },
   {
-    "title": {
-      "ru": "Owl",
-      "en": "Owl"
+    title: {
+      ru: 'Аврелия',
+      en: 'Aurelia',
     },
-    "desc": {
-      "ru": "Школа английского языка",
-      "en": "English language school"
+    desc: {
+      ru: 'Салон доставки цветов',
+      en: 'Flower delivery store',
     },
-    "thumb": "/Owl.jpg",
-    "link": "http://owl.s-r-x.com/",
-    "asset_key": "owl"
+    thumb: '/Aurelia.jpg',
+    link: 'http://aurelia.s-r-x.com/',
+    asset_key: 'aurelia',
   },
   {
-    "title": {
-      "ru": "Мгновения",
-      "en": "Moments"
+    title: {
+      ru: 'Owl',
+      en: 'Owl',
     },
-    "desc": {
-      "ru": "Цикл фотографий",
-      "en": "Photo series"
+    desc: {
+      ru: 'Школа английского языка',
+      en: 'English language school',
     },
-    "thumb": "/Moments.jpg",
-    "link": "http://moments.s-r-x.com/",
-    "asset_key": "moments"
+    thumb: '/Owl.jpg',
+    link: 'http://owl.s-r-x.com/',
+    asset_key: 'owl',
   },
   {
-    "title": {
-      "ru": "Моне",
-      "en": "Monet"
+    title: {
+      ru: 'Мгновения',
+      en: 'Moments',
     },
-    "desc": {
-      "ru": "Биография Клода Моне",
-      "en": "Claude Monet biography"
+    desc: {
+      ru: 'Цикл фотографий',
+      en: 'Photo series',
     },
-    "thumb": "/Monet.jpg",
-    "link": "http://monet.s-r-x.com/",
-    "asset_key": "monet"
+    thumb: '/Moments.jpg',
+    link: 'http://moments.s-r-x.com/',
+    asset_key: 'moments',
   },
   {
-    "title": {
-      "ru": "Cozy",
-      "en": "Cozy"
+    title: {
+      ru: 'Моне',
+      en: 'Monet',
     },
-    "desc": {
-      "ru": "Студия дизайна интерьера",
-      "en": "Interiors design studio"
+    desc: {
+      ru: 'Биография Клода Моне',
+      en: 'Claude Monet biography',
     },
-    "thumb": "/Cozy.jpg",
-    "link": "http://cozy.s-r-x.com/",
-    "asset_key": "cozy"
+    thumb: '/Monet.jpg',
+    link: 'http://monet.s-r-x.com/',
+    asset_key: 'monet',
   },
   {
-    "title": {
-      "ru": "Узелковое письмо",
-      "en": "Knotted letter"
+    title: {
+      ru: 'Cozy',
+      en: 'Cozy',
     },
-    "desc": {
-      "ru": "Блог о природе и путешествиях",
-      "en": "Nature and travel blog"
+    desc: {
+      ru: 'Студия дизайна интерьера',
+      en: 'Interiors design studio',
     },
-    "thumb": "/Uzel.jpg",
-    "link": "https://www.uzelkovoye-pismo.ru",
-    "asset_key": "uzel"
+    thumb: '/Cozy.jpg',
+    link: 'http://cozy.s-r-x.com/',
+    asset_key: 'cozy',
+  },
+  {
+    title: {
+      ru: 'Узелковое письмо',
+      en: 'Knotted letter',
+    },
+    desc: {
+      ru: 'Блог о природе и путешествиях',
+      en: 'Nature and travel blog',
+    },
+    thumb: '/Uzel.jpg',
+    link: 'https://www.uzelkovoye-pismo.ru',
+    asset_key: 'uzel',
   },
 ];
