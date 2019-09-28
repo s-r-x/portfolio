@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 import { THUMBS_BASE_URL, RETINA_PREFIX } from './constants';
-
+//
 // https://gist.github.com/ClickSimply/581823db9cdc8d94ed3f78c1a548f50d
 export function scaleSprite(inputSprite, targetWidth, targetHeight) {
   var sprite = inputSprite;
