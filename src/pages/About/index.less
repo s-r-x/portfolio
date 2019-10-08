@@ -1,23 +1,17 @@
 .about {
   &--inner {
     display: flex;
-    align-items: center;
-  }
-  h2 {
-    font-size: 96px;
-    margin: 0;
-    padding-right: 50px;
+    width: 80%;
   }
   p {
     margin: 0;
     margin-bottom: 20px;
   }
   &--right {
+    max-width: 45%;
+    margin-left: auto;
     padding-left: 23px;
     border-left: 1px solid white;
-    max-width: 555px;
-  }
-  &--links {
   }
   a {
     display: inline-block;
@@ -46,12 +40,6 @@
 @media(max-width: 991px) {
   .about {
     padding: 0 15px;
-    h2 {
-      font-size: 62px;
-    }
-    &--right {
-      max-width: none;
-    }
   }
 }
 @media(max-width: 750px) {
@@ -59,9 +47,6 @@
     &--inner {
       flex-direction: column;
       align-items: flex-start;
-    }
-    h2 {
-
     }
     &--right {
       padding-left: 0;

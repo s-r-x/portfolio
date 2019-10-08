@@ -2,7 +2,6 @@ import './index.less';
 import React, { PureComponent } from 'react'
 import { THUMBS_BASE_URL } from '../../constants';
 import Thumb from './Thumb';
-import * as PIXI from 'pixi.js';
 import { connect } from 'react-redux';
 import projectsList from '../../projects';
 import Text from './Text';
@@ -29,7 +28,6 @@ class Works extends PureComponent {
     window.removeEventListener('wheel', this.wheelListener);
     window.removeEventListener('keydown', this.keystrokeListener);
   }
-  // TODO:: dry
   nextHandler() {
     this.props.nextSlide();
   }
@@ -65,7 +63,7 @@ class Works extends PureComponent {
   render() {
     const { lang, activeSlide } = this.props;
     if(activeSlide === null) {
-      return false;
+      return null;
     }
     const project = projectsList[activeSlide];
     const { title, desc } = project;
