@@ -1,5 +1,5 @@
 import webfont from 'webfontloader';
-import {FONT, FONT_STYLE, MAX_PARTICLES} from './constants';
+import {FONT, FONT_STYLE, MAX_PARTICLES, PARTICLE_SIZE} from './constants';
 import Particle from './Particle';
 import {
   ParticleContainer,
@@ -17,12 +17,19 @@ export const loadFont = onSuccess =>
     active: onSuccess,
   });
 
+const checkColor = (x, y, pixels, textureWidth) => {
+  for (let i = 0; i < PARTICLE_SIZE; i++) {
+    const index = (y + i) * textureWidth + x + i;
+    if (pixels[index][0] > 0) return true;
+  }
+};
 export const createParticles = ({pixels, texture}) => {
   const container = new ParticleContainer(MAX_PARTICLES);
-  for (let x = 0; x < Math.floor(texture.width); x++) {
-    for (let y = 0; y < Math.floor(texture.height); y++) {
-      const index = y * texture.width + x;
-      if (pixels[index][0] > 0) {
+  for (let x = 0; x < Math.floor(texture.width) / PARTICLE_SIZE; x++) {
+    for (let y = 0; y < Math.floor(texture.height) / PARTICLE_SIZE; y++) {
+      if (
+        checkColor(x * PARTICLE_SIZE, y * PARTICLE_SIZE, pixels, texture.width)
+      ) {
         const particle = new Particle(x, y, texture);
         container.addChild(particle);
       }
@@ -41,4 +48,4 @@ export const createTextureFromText = ({text, renderer}) => {
   return rt;
 };
 
-export const mapNumber = (x, a, b, c, d,) => (x - a) * ( (d - c) / (b - a) ) + c;
+export const mapNumber = (x, a, b, c, d) => (x - a) * ((d - c) / (b - a)) + c;

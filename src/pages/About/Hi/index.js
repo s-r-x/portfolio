@@ -9,7 +9,6 @@ import {clearContainer, wait} from '../../../utils';
 import Particle from './Particle';
 import chunk from 'lodash.chunk';
 import {loadFont, createParticles, createTextureFromText} from './utils';
-import {FONT_STYLE, MAX_PARTICLES} from './constants';
 
 const {RenderTexture, Container, Sprite, ParticleContainer, Rectangle} = PIXI;
 
@@ -52,9 +51,9 @@ const Hi = ({text}) => {
     particleUpdater = () => {
       const {x, y} = renderer.plugins.interaction.mouse.global;
       //if(x > container.x && x < container.x + rt.width && y > container.y && y < container.y + rt.height) {
-      container.children.forEach(p =>
-        p.__update(x - container.x, y - container.y),
-      );
+      //container.children.forEach(p =>
+      //  p.__update(x - container.x, y - container.y),
+      //);
       //}
     };
     ticker.add(particleUpdater);

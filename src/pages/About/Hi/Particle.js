@@ -1,10 +1,12 @@
 import {Sprite, Texture, Rectangle} from 'pixi.js';
+import { PARTICLE_SIZE } from './constants';
+
 export default class Particle extends Sprite {
   constructor(x, y, texture) {
     super(new Texture(texture));
     this.x = x;
     this.y = y;
-    this.texture.frame = new Rectangle(x, y, 1, 1);
+    this.texture.frame = new Rectangle(x, y, PARTICLE_SIZE, PARTICLE_SIZE);
     this._initX = x;
     this._initY = y;
     this._speedX = 0;
