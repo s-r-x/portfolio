@@ -12,7 +12,7 @@ import {
 export const loadFont = onSuccess =>
   webfont.load({
     google: {
-      families: [FONT],
+      families: [FONT + ':900:cyrillic', FONT + ':900'],
     },
     active: onSuccess,
   });
@@ -25,12 +25,16 @@ const checkColor = (x, y, pixels, textureWidth) => {
 };
 export const createParticles = ({pixels, texture}) => {
   const container = new ParticleContainer(MAX_PARTICLES);
-  for (let x = 0; x < Math.floor(texture.width) / PARTICLE_SIZE; x++) {
-    for (let y = 0; y < Math.floor(texture.height) / PARTICLE_SIZE; y++) {
+  for (let x = 0; x < Math.floor(texture.width / PARTICLE_SIZE); x++) {
+    for (let y = 0; y < Math.floor(texture.height / PARTICLE_SIZE); y++) {
       if (
         checkColor(x * PARTICLE_SIZE, y * PARTICLE_SIZE, pixels, texture.width)
       ) {
-        const particle = new Particle(x * PARTICLE_SIZE, y * PARTICLE_SIZE, texture);
+        const particle = new Particle(
+          x * PARTICLE_SIZE,
+          y * PARTICLE_SIZE,
+          texture,
+        );
         container.addChild(particle);
       }
     }

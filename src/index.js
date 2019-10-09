@@ -17,6 +17,7 @@ const gsapPlugins = [ CSSPlugin ];
 
 if (module.hot) module.hot.accept()
 
+console.log(`^-^ 🚀🚀🚀 ^-^`);
 loadAssets(() => {
   __ee__.emit('assets_load');
   hidePreloader();

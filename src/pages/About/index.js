@@ -9,6 +9,9 @@ const AboutPage = ({lang}) => {
     <section className="about">
       <Hi text={dict.about_hello[lang]} />
       <div className="about--inner">
+        <div className="about--left">
+          <h2>{dict.about_hello[lang]}</h2>
+        </div>
         <div className="about--right">
           <p>{dict.about_first_p[lang]}</p>
           <p>{dict.about_second_p[lang]}</p>

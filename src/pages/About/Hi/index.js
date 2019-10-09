@@ -9,9 +9,11 @@ import {clearContainer, wait} from '../../../utils';
 import Particle from './Particle';
 import chunk from 'lodash.chunk';
 import {loadFont, createParticles, createTextureFromText} from './utils';
+import {TEXT_TOP_OFFSET, ACTIVE_CANVAS_BREAKPOINT} from './constants';
 
 const {RenderTexture, Container, Sprite, ParticleContainer, Rectangle} = PIXI;
 
+// TODO:: hide pixi canvas on resize < 1100px
 const pixiApp = new PIXI.Application({
   autoResize: true,
   pixelRatio: window.devicePixelRatio,
@@ -27,6 +29,7 @@ const RESIZE_DELAY = 250;
 const Hi = ({text}) => {
   const ref = useRef();
   const [fontLoaded, setFontLoaded] = useState(false);
+  const [show, setShow] = useState(false);
   const renderText = () => {
     const $wrap = ref.current;
     const {renderer, stage, ticker} = pixiApp;
@@ -39,25 +42,24 @@ const Hi = ({text}) => {
       pixels: chunk(pixiApp.renderer.extract.pixels(rt), 4),
       texture: rt,
     });
-    stage.addChild(container);
     const width = $wrap.offsetWidth,
       height = $wrap.offsetHeight;
     renderer.resize(width, height);
-    const {x: descX} = document
+    const {x: descX, y: descY, height: descHeight} = document
       .querySelector('.about--right')
       .getBoundingClientRect();
-    container.x = descX - rt.width;
-    container.y = (height - 170) / 2 + rt.height / 2;
+    container.x = descX - rt.width - 30;
+    container.y = (descY + descHeight / 2) - rt.height/ 2.5;
+    stage.addChild(container);
     particleUpdater = () => {
       const {x, y} = renderer.plugins.interaction.mouse.global;
-      //if(x > container.x && x < container.x + rt.width && y > container.y && y < container.y + rt.height) {
-      //container.children.forEach(p =>
-      //  p.__update(x - container.x, y - container.y),
-      //);
-      //}
+      container.children.forEach(p => {
+        p.__update(x - container.x, y - container.y);
+      });
     };
     ticker.add(particleUpdater);
     pixiApp.ticker.start();
+    setShow(true);
   };
   const onResize = debounce(() => {
     renderText();
@@ -66,7 +68,7 @@ const Hi = ({text}) => {
     loadFont(() => setFontLoaded(true));
   }, []);
   useEffect(() => {
-    if (fontLoaded) {
+    if (fontLoaded && ref.current.offsetWidth > ACTIVE_CANVAS_BREAKPOINT) {
       const $wrap = ref.current;
       const {renderer, stage} = pixiApp;
       wait(isFirstLoad ? WAIT_FIRST_LOAD : WAIT_LOADED).then(() => {
@@ -86,7 +88,7 @@ const Hi = ({text}) => {
       };
     }
   }, [text, fontLoaded]);
-  return <div className="hi" ref={ref} />;
+  return <div className={show ? 'hi visible' : 'hi'} ref={ref} />;
 };
 
 export default Hi;

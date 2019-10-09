@@ -1,5 +1,8 @@
+// https://www.youtube.com/watch?v=k7CnKHRp4mY
+// thank you Yuri :)
+
 import {Sprite, Texture, Rectangle} from 'pixi.js';
-import { PARTICLE_SIZE } from './constants';
+import {PARTICLE_SIZE} from './constants';
 
 export default class Particle extends Sprite {
   constructor(x, y, texture) {
@@ -11,19 +14,29 @@ export default class Particle extends Sprite {
     this._initY = y;
     this._speedX = 0;
     this._speedY = 0;
-    this._friction = 0.8;
-    this._radius = 150;
-    this._gravity = 0.1;
+    this._friction = 0.89;
+    this._radius = 90;
+    this._gravity = 0.01;
+    this._maxGravity = 0.03 + Math.random() * 0.03;
   }
   __update(mouseX, mouseY) {
-    const a = mouseX - this._initX, b = mouseY - this._initY;
-    const dist = Math.hypot(a, b);
+    const a = mouseX - this.x,
+      b = mouseY - this.y;
+    const dist = Math.sqrt(a * a + b * b);
+    const normalX = a / dist;
+    const normalY = b / dist;
     if (dist < this._radius) {
-      this._speedX -= a / dist;
-      this._speedY -= b / dist;
+      this._gravity *= this._friction;
+      this._speedX -= normalX;
+      this._speedY -= normalY;
+    } else {
+      this._gravity += 0.1 * (this._maxGravity - this._gravity);
     }
-    this._speedX += (this._initX - this.x) * this._gravity;
-    this._speedY += (this._initY - this.y) * this._gravity;
+    const oDistX = this._initX - this.x;
+    const oDistY = this._initY - this.y;
+    this._speedX += oDistX * this._gravity;
+    this._speedY += oDistY * this._gravity;
+
     this._speedX *= this._friction;
     this._speedY *= this._friction;
     this.x += this._speedX;
