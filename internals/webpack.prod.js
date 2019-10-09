@@ -1,14 +1,14 @@
 const merge = require('webpack-merge');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const notifier = require('./parts/notifier');
 const styleLoaders = require('./parts/styleLoaders');
 const common = require('./webpack.common');
-const { STYLE_REGEX, DST, ASSETS_PATH } = require('./constants');
-const CleanWebpackPlugin = require('clean-webpack-plugin')
+const {STYLE_REGEX, DST, ASSETS_PATH} = require('./constants');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const config = {
   devtool: false,
@@ -17,10 +17,7 @@ const config = {
     rules: [
       {
         test: STYLE_REGEX,
-        use: [
-          { loader: MiniCssExtractPlugin.loader },
-          ...styleLoaders,
-        ],
+        use: [{loader: MiniCssExtractPlugin.loader}, ...styleLoaders],
       },
     ],
   },
@@ -31,11 +28,9 @@ const config = {
     }),
     new ProgressBarPlugin(),
     notifier,
-    new CopyPlugin([
-      { from: ASSETS_PATH, to: DST },
-    ]),
-    new CleanWebpackPlugin([ DST ], {
-      root: '/', 
+    new CopyPlugin([{from: ASSETS_PATH, to: DST}]),
+    new CleanWebpackPlugin([DST], {
+      root: '/',
     }),
   ],
   optimization: {
@@ -43,22 +38,15 @@ const config = {
       cacheGroups: {
         commons: {
           test: /[\\/]node_modules[\\/]/,
-          name: "vendor",
-          chunks: "initial",
+          name: 'vendor',
+          chunks: 'initial',
         },
       },
     },
     runtimeChunk: {
       name: 'manifest',
     },
-    minimizer: [
-      new UglifyJsPlugin({
-        cache: true,
-        parallel: true,
-        sourceMap: true,
-      }),
-      new OptimizeCSSAssetsPlugin({}),
-    ],
+    minimizer: [new TerserPlugin(), new OptimizeCSSAssetsPlugin({})],
   },
 };
 
