@@ -5,12 +5,13 @@ import {Expo} from 'gsap/EasePack';
 import debounce from 'lodash.debounce';
 import './index.less';
 const {Text, TextStyle} = PIXI;
-import webfont from 'webfontloader';
 import {clearContainer, wait} from '../../../utils';
 import Particle from './Particle';
 import chunk from 'lodash.chunk';
+import {loadFont, createParticles, createTextureFromText} from './utils';
+import {FONT_STYLE, MAX_PARTICLES} from './constants';
 
-const {RenderTexture, Container, Sprite, ParticleContainer} = PIXI;
+const {RenderTexture, Container, Sprite, ParticleContainer, Rectangle} = PIXI;
 
 const pixiApp = new PIXI.Application({
   autoResize: true,
@@ -19,6 +20,10 @@ const pixiApp = new PIXI.Application({
 });
 pixiApp.ticker.stop();
 let particleUpdater;
+let isFirstLoad = true;
+const WAIT_FIRST_LOAD = 800;
+const WAIT_LOADED = 500;
+const RESIZE_DELAY = 250;
 
 const Hi = ({text}) => {
   const ref = useRef();
@@ -30,68 +35,43 @@ const Hi = ({text}) => {
       ticker.remove(particleUpdater);
     }
     clearContainer(stage);
-    const container = new ParticleContainer(20000);
-    stage.addChild(container);
-    const textStyle = new TextStyle({
-      fontFamily: 'Merriweather',
-      fontSize: 48,
-      fontSize: 96,
-      lineHeight: 41,
-      fontWeight: 900,
-      letterSpacing: 2,
-      fill: 0xffffff,
+    const rt = createTextureFromText({text, renderer});
+    const container = createParticles({
+      pixels: chunk(pixiApp.renderer.extract.pixels(rt), 4),
+      texture: rt,
     });
-    const textContainer = new Container();
-    textContainer.addChild(new Text(text, textStyle));
-    const rt = RenderTexture.create(textContainer.width, textContainer.height);
-    renderer.render(textContainer, rt);
-    const pixels = chunk(pixiApp.renderer.extract.pixels(rt), 4);
-    const SIZE = 2;
-    const checkFill = (x, y) => {
-      for (let i = 0; i < SIZE; i++) {
-        for (let j = 0; j < SIZE; j++) {
-          const index = (y + i) * rt.width + x + i;
-          return pixels[index].some(c => c > 0);
-        }
-      }
-    };
-    for (let x = 0; x < Math.floor(rt.width / SIZE); x++) {
-      for (let y = 0; y < Math.floor(rt.height / SIZE); y++) {
-        if (checkFill(x * SIZE, y * SIZE)) {
-          const particle = new Particle(SIZE * x, SIZE * y, SIZE, rt);
-          container.addChild(particle);
-        }
-      }
-    }
+    stage.addChild(container);
     const width = $wrap.offsetWidth,
       height = $wrap.offsetHeight;
     renderer.resize(width, height);
     const {x: descX} = document
       .querySelector('.about--right')
       .getBoundingClientRect();
-    stage.x = descX - rt.width;
-    stage.y = (height - 170) / 2 + rt.height / 2;
-    //particleUpdater = () => container.children.forEach(p => p.__update());
+    container.x = descX - rt.width;
+    container.y = (height - 170) / 2 + rt.height / 2;
+    particleUpdater = () => {
+      const {x, y} = renderer.plugins.interaction.mouse.global;
+      //if(x > container.x && x < container.x + rt.width && y > container.y && y < container.y + rt.height) {
+      container.children.forEach(p =>
+        p.__update(x - container.x, y - container.y),
+      );
+      //}
+    };
     ticker.add(particleUpdater);
-    console.log(container.children.length);
+    pixiApp.ticker.start();
   };
   const onResize = debounce(() => {
     renderText();
-  }, 500);
+  }, RESIZE_DELAY);
   useEffect(() => {
-    webfont.load({
-      google: {
-        families: ['Merriweather'],
-      },
-      active: () => setFontLoaded(true),
-    });
+    loadFont(() => setFontLoaded(true));
   }, []);
   useEffect(() => {
     if (fontLoaded) {
       const $wrap = ref.current;
       const {renderer, stage} = pixiApp;
-      wait(500).then(() => {
-        pixiApp.ticker.start();
+      wait(isFirstLoad ? WAIT_FIRST_LOAD : WAIT_LOADED).then(() => {
+        isFirstLoad = false;
         $wrap.appendChild(renderer.view);
         renderText();
         window.removeEventListener('resize', onResize);
@@ -102,9 +82,7 @@ const Hi = ({text}) => {
         if (particleUpdater) {
           pixiApp.ticker.remove(particleUpdater);
         }
-        setTimeout(() => {
-          clearContainer(stage);
-        }, 500);
+        clearContainer(stage);
         window.removeEventListener('resize', onResize);
       };
     }
