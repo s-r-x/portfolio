@@ -1,7 +1,7 @@
 export const FONT = 'Merriweather';
 export const FONT_STYLE = {
   fontFamily: FONT,
-  fontSize: 21,
+  fontSize: 96,
   lineHeight: 41,
   fontWeight: 900,
   letterSpacing: 2,

@@ -30,7 +30,7 @@ export const createParticles = ({pixels, texture}) => {
       if (
         checkColor(x * PARTICLE_SIZE, y * PARTICLE_SIZE, pixels, texture.width)
       ) {
-        const particle = new Particle(x, y, texture);
+        const particle = new Particle(x * PARTICLE_SIZE, y * PARTICLE_SIZE, texture);
         container.addChild(particle);
       }
     }
