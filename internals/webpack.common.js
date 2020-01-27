@@ -1,8 +1,8 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { FILE_REGEX } = require('./constants');
+const {FILE_REGEX} = require('./constants');
 
-const { SRC, DST } = require('./constants');
+const {SRC, DST} = require('./constants');
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -16,6 +16,11 @@ module.exports = {
 
     path: DST,
   },
+  resolve: {
+    alias: {
+      '@': SRC,
+    },
+  },
   module: {
     rules: [
       {
@@ -25,36 +30,34 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: [
-              [ 
-                '@babel/preset-env', 
-                { 'useBuiltIns': 'usage', modules: false, }
-              ],
-              '@babel/preset-react', 
+              ['@babel/preset-env', {useBuiltIns: 'usage', modules: false}],
+              '@babel/preset-react',
             ],
             plugins: [
               '@babel/plugin-syntax-dynamic-import',
+              '@babel/plugin-proposal-class-properties',
             ],
           },
-        }
+        },
       },
       {
         test: FILE_REGEX,
         use: {
           loader: 'file-loader',
           options: {
-            name: "[name].[hash:8].[ext]", 
-          }
-        }
+            name: '[name].[hash:8].[ext]',
+          },
+        },
       },
       {
         test: /\.(frag)|(vert)$/,
         use: 'raw-loader',
       },
-    ]
+    ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.join(SRC, 'index.html'), 
-    })
+      template: path.join(SRC, 'index.html'),
+    }),
   ],
 };

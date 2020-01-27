@@ -8,11 +8,6 @@ import TweenLite from 'gsap/TweenLite';
 import {connect} from 'react-redux';
 import {Expo} from 'gsap/EasePack';
 import fragShader from './shader.frag';
-import {
-  changeAnimatingState,
-  nextSlide,
-  prevSlide,
-} from '../../actions/creators';
 
 // note:: never create pixi app on mount!
 // react prevent to gargabe collect webgl context
@@ -59,14 +54,15 @@ class Thumb extends PureComponent {
     th.hammer = new Hammer(pixiApp.renderer.view);
     th.hammer.on('swipe', function({offsetDirection: dir}) {
       if (dir === Hammer.DIRECTION_LEFT) {
-        th.props.dispatch(nextSlide());
+        th.props.nextSlide();
       } else if (dir === Hammer.DIRECTION_RIGHT) {
-        th.props.dispatch(prevSlide());
+        th.props.prevSlide();
       }
     });
   }
   initFilter() {
-    const {activeSlide, slides} = this.props;
+    const {activeSlide} = this.props;
+    const slides = window.portfolioTextures;
     if (!filter) {
       filter = new PIXI.Filter(null, fragShader, {
         texture1: slides[activeSlide],
@@ -81,10 +77,11 @@ class Thumb extends PureComponent {
     }
   }
   componentDidUpdate(prevProps) {
-    const {activeSlide, slides} = this.props;
+    const {activeSlide} = this.props;
     if (activeSlide === prevProps.activeSlide) {
       return;
     }
+    const slides = window.portfolioTextures;
     const newTexture = slides[activeSlide];
     const oldTexture = slides[prevProps.activeSlide];
     filter.uniforms.texture1 = oldTexture;
@@ -104,7 +101,7 @@ class Thumb extends PureComponent {
     TweenLite.to(filter.uniforms, 1, {
       ease: Expo.easeOut,
       dispFactor: 1,
-      onComplete: () => this.props.dispatch(changeAnimatingState(false)),
+      onComplete: () => this.props.animationEnd(),
     });
   }
   resizeHandler() {
@@ -124,11 +121,4 @@ class Thumb extends PureComponent {
   }
 }
 
-const mapStateToProps = ({activeSlide, slides}) => ({
-  activeSlide,
-  slides,
-});
-export default connect(
-  mapStateToProps,
-  null,
-)(Thumb);
+export default Thumb;

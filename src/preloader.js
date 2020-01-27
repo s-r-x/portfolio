@@ -1,4 +1,4 @@
-export default function() {
+export default function hidePreloader() {
   const $preloader = document.querySelector('.preloader');
   const $spinner = $preloader.querySelector('.sk-folding-cube');
   const $left = $preloader.querySelector('.preloader--left');

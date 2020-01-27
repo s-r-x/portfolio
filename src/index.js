@@ -4,7 +4,7 @@ import './polyfills/find';
 import 'promise-polyfill/src/polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import App from '@/containers/App';
 import { Provider } from 'react-redux';
 import  store  from './store';
 import CSSPlugin from 'gsap/CSSPlugin';

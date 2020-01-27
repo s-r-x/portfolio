@@ -1,29 +1,29 @@
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from 'react';
 import './Menu.less';
 import logo from '../images/srx_logo_white.svg';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import dict from '../translations';
-import { connect } from 'react-redux';
-import { changeLang } from '../actions/creators';
-import TweenLite from 'gsap/TweenLite'
-import { Expo } from 'gsap/EasePack';
-import { RESIZE_DELAY } from '../constants'
+import {connect} from 'react-redux';
+import {changeLang} from '@/store/slice/lang';
+import TweenLite from 'gsap/TweenLite';
+import {Expo} from 'gsap/EasePack';
+import {RESIZE_DELAY} from '../constants';
 import throttle from 'lodash.throttle';
 import ResizeObserver from 'resize-observer-polyfill';
 
 const routes = [
-  { path: '/works', translationKey: 'menu_works' },
-  { path: '/message', translationKey: 'menu_message' },
-  { path: '/about', translationKey: 'menu_about' },
+  {path: '/works', translationKey: 'menu_works'},
+  {path: '/message', translationKey: 'menu_message'},
+  {path: '/about', translationKey: 'menu_about'},
 ];
 
-const Li = ({ to, text, isActive }) => {
+const Li = ({to, text, isActive}) => {
   return (
     <li data-path={to} className={isActive ? 'is-active' : ''}>
       <Link to={to}>{text}</Link>
     </li>
-  )
-}
+  );
+};
 
 class Menu extends PureComponent {
   constructor() {
@@ -44,14 +44,19 @@ class Menu extends PureComponent {
       const $a = $li.querySelector('a');
       $a.addEventListener('click', () => {
         const $ham = document.querySelector('.hamburger');
-        if($ham.classList.contains('is-active')) {
+        if ($ham.classList.contains('is-active')) {
           $ham.classList.remove('is-active');
           $wrap.classList.remove('is-active');
         }
       });
     });
-    window.addEventListener('resize', throttle(() => this.updateBottomLine(false), RESIZE_DELAY));
-    const resizeObserver = new ResizeObserver(_ => this.updateBottomLine(false));
+    window.addEventListener(
+      'resize',
+      throttle(() => this.updateBottomLine(false), RESIZE_DELAY),
+    );
+    const resizeObserver = new ResizeObserver(_ =>
+      this.updateBottomLine(false),
+    );
     $lis.forEach($el => resizeObserver.observe($el));
     // give browser some time to calc positions
     setTimeout(() => this.updateBottomLine(false), 275);
@@ -66,61 +71,74 @@ class Menu extends PureComponent {
       x: rect.left,
       y: rect.top + rect.height,
       width: rect.width,
-    }
-    if(!needAnimation) {
+    };
+    if (!needAnimation) {
       TweenLite.set($line, to);
-    }
-    else {
-      TweenLite.to($line, .55, {
+    } else {
+      TweenLite.to($line, 0.55, {
         ...to,
         ease: Expo.easeInOut,
       });
-
     }
   }
   render() {
-    const { lang, dispatch } = this.props;
+    const {lang} = this.props;
     const activePath = window.location.pathname;
     return (
       <div className="top-menu" ref={this.ref}>
-        <span ref={this.lineRef} className="top-menu--bottom-line" role="presentation"></span>
-        <Link to="/" className="home-link" aria-label={dict.homelink_label[lang]}>
-          <img src={logo} alt="" className="logo"/>
+        <span
+          ref={this.lineRef}
+          className="top-menu--bottom-line"
+          role="presentation"></span>
+        <Link
+          to="/"
+          className="home-link"
+          aria-label={dict.homelink_label[lang]}>
+          <img src={logo} alt="" className="logo" />
         </Link>
         <nav>
           <ul>
-            {routes.map(function({ path, translationKey }) {
+            {routes.map(function({path, translationKey}) {
               return (
-                <Li 
+                <Li
                   isActive={activePath.startsWith(path)}
-                  key={path} 
-                  to={path} 
+                  key={path}
+                  to={path}
                   text={dict[translationKey][lang]}
                 />
-              )
+              );
             })}
           </ul>
         </nav>
         <div className="lang-toggler">
-          <button 
+          <button
             className={lang === 'en' ? 'is-active' : ''}
             aria-label="Change language to english"
-            onClick={() => dispatch(changeLang('en'))}>en </button>
-          <span className="delimiter">
-            /
-          </span>
-          <button 
+            onClick={() => this.props.changeLang('en')}>
+            en{' '}
+          </button>
+          <span className="delimiter">/</span>
+          <button
             className={lang === 'ru' ? 'is-active' : ''}
             aria-label="Изменить язык на русский"
-            onClick={() => dispatch(changeLang('ru'))}> ru</button>
+            onClick={() => this.props.changeLang('ru')}>
+            {' '}
+            ru
+          </button>
         </div>
       </div>
-    )
+    );
   }
 }
 
-const mapStateToProps = ({ lang }) => ({
+const mapState = ({lang}) => ({
   lang,
 });
+const mapDispatch = dispatch => ({
+  changeLang: lang => dispatch(changeLang(lang)),
+});
 
-export default connect(mapStateToProps, null)(Menu);
+export default connect(
+  mapState,
+  mapDispatch,
+)(Menu);
