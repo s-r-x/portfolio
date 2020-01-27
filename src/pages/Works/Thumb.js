@@ -8,16 +8,12 @@ import TweenLite from 'gsap/TweenLite';
 import {connect} from 'react-redux';
 import {Expo} from 'gsap/EasePack';
 import fragShader from './shader.frag';
+import vertShader from './shader.vert';
+import {renderer, ticker} from '@/pixi';
+const {Container, Rectangle} = PIXI;
 
-// note:: never create pixi app on mount!
-// react prevent to gargabe collect webgl context
-const pixiApp = new PIXI.Application({
-  autoResize: true,
-  pixelRatio: window.devicePixelRatio,
-  transparent: true,
-});
-pixiApp.ticker.stop();
 let filter;
+let stage;
 
 class Thumb extends PureComponent {
   constructor() {
@@ -26,12 +22,12 @@ class Thumb extends PureComponent {
     this.resizeHandler = throttle(this.resizeHandler.bind(this), RESIZE_DELAY);
   }
   componentDidMount() {
-    const $wrap = this.ref.current;
-    const {renderer, stage} = pixiApp;
-    pixiApp.ticker.start();
-    this.initFilter();
-    this.resizeHandler();
-    $wrap.appendChild(renderer.view);
+    if (!stage) {
+      stage = new Container();
+      this.initFilter();
+      this.resizeHandler();
+    }
+    ticker.add(this.onTick);
     window.addEventListener('resize', this.resizeHandler);
     if (window.hasOwnProperty('Hammer')) {
       return this.initHammer();
@@ -43,15 +39,15 @@ class Thumb extends PureComponent {
   }
   componentWillUnmount() {
     window.removeEventListener('resize', this.resizeHandler);
-    // another weird pixi bug - when you go to another route and
-    // go back after a moment pixi ticker doesn't start again! only after a 500 ms delay
-    // wtf actually!
-    //pixiApp.ticker.stop();
     this.hammer.destroy();
+    ticker.remove(this.onTick);
+  }
+  onTick() {
+    renderer.render(stage);
   }
   initHammer() {
     const th = this;
-    th.hammer = new Hammer(pixiApp.renderer.view);
+    th.hammer = new Hammer(this.ref.current);
     th.hammer.on('swipe', function({offsetDirection: dir}) {
       if (dir === Hammer.DIRECTION_LEFT) {
         th.props.nextSlide();
@@ -64,16 +60,16 @@ class Thumb extends PureComponent {
     const {activeSlide} = this.props;
     const slides = window.portfolioTextures;
     if (!filter) {
-      filter = new PIXI.Filter(null, fragShader, {
+      filter = new PIXI.Filter(vertShader, fragShader, {
         texture1: slides[activeSlide],
         texture2: slides[activeSlide],
         disp: PIXI.Loader.shared.resources.disp.texture,
-        dispFactor: 0,
+        dispFactor: 1,
         effectFactor: 1,
         isNext: 1,
       });
       filter.padding = 0;
-      pixiApp.stage.filters = [filter];
+      stage.filters = [filter];
     }
   }
   componentDidUpdate(prevProps) {
@@ -107,14 +103,12 @@ class Thumb extends PureComponent {
   resizeHandler() {
     const {slides, activeSlide} = this.props;
     const width = this.ref.current.offsetWidth;
+    const bounds = this.ref.current.getBoundingClientRect();
     const height = width / THUMB_RATIO;
-    clearContainer(pixiApp.stage);
+    clearContainer(stage);
     const graphics = new PIXI.Graphics();
-    // need to store something in pixi stage
-    // or it doesn't render anything
-    pixiApp.renderer.resize(width, height);
-    graphics.drawRect(0, 0, pixiApp.screen.width, pixiApp.screen.height);
-    pixiApp.stage.addChild(graphics);
+    graphics.drawRect(bounds.x, bounds.y, width, height);
+    stage.addChild(graphics);
   }
   render() {
     return <div className="works--thumb" ref={this.ref} />;
