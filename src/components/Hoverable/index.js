@@ -42,8 +42,8 @@ const Hoverable = props => {
       className="hoverable">
       <div
         style={{
-          width: props.areaX + 'px',
-          height: props.areaY + 'px',
+          width: props.areaX ? props.areaX + 'px' : '100%',
+          height: props.areaY ? props.areaY + 'px' : '100%',
         }}
         className="hoverable-area"
       />
@@ -54,8 +54,6 @@ const Hoverable = props => {
   );
 };
 Hoverable.defaultProps = {
-  areaX: 70,
-  areaY: 70,
   event: 'mouse_enter/link',
   leaveEvent: 'mouse_leave/link',
   style: {},

@@ -1,17 +1,19 @@
 import React, {PureComponent} from 'react';
-import './Menu.less';
-import logo from '../images/srx_logo_white.svg';
+import './index.less';
+import logo from '@/images/srx_logo_white.svg';
 import {Link} from 'react-router-dom';
-import dict from '../translations';
+import dict from '@/translations';
 import {connect} from 'react-redux';
 import {changeLang} from '@/store/slice/lang';
 import TweenLite from 'gsap/TweenLite';
 import {Expo} from 'gsap/EasePack';
-import {RESIZE_DELAY} from '../constants';
+import {RESIZE_DELAY} from '@/constants';
 import throttle from 'lodash.throttle';
 import ResizeObserver from 'resize-observer-polyfill';
 import {withRouter} from 'react-router-dom';
 import Hoverable from '@/components/Hoverable';
+import ThemeToggler from './ThemeToggler';
+import { changeTheme } from '@/store/slice/theme';
 
 const routes = [
   {path: '/', translationKey: 'menu_works'},
@@ -23,7 +25,7 @@ const Li = ({to, text, isActive}) => {
   return (
     <li data-path={to} className={isActive ? 'is-active' : ''}>
       <Hoverable>
-        <Link to={to}>{text}</Link>
+        <Link className="theme-dependent" to={to}>{text}</Link>
       </Hoverable>
     </li>
   );
@@ -114,21 +116,26 @@ class Menu extends PureComponent {
             })}
           </ul>
         </nav>
-        <div className="lang-toggler">
-          <button
-            className={lang === 'en' ? 'is-active' : ''}
-            aria-label="Change language to english"
-            onClick={() => this.props.changeLang('en')}>
-            en{' '}
-          </button>
-          <span className="delimiter">/</span>
-          <button
-            className={lang === 'ru' ? 'is-active' : ''}
-            aria-label="Изменить язык на русский"
-            onClick={() => this.props.changeLang('ru')}>
-            {' '}
-            ru
-          </button>
+        <div className="top-menu--right">
+          <div className="theme-toggler">
+            <ThemeToggler changeTheme={this.props.changeTheme} />
+          </div>
+          <div className="lang-toggler theme-dependent">
+            <button
+              className={lang === 'en' ? 'is-active' : ''}
+              aria-label="Change language to english"
+              onClick={() => this.props.changeLang('en')}>
+              en{' '}
+            </button>
+            <span className="delimiter">/</span>
+            <button
+              className={lang === 'ru' ? 'is-active' : ''}
+              aria-label="Изменить язык на русский"
+              onClick={() => this.props.changeLang('ru')}>
+              {' '}
+              ru
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -140,6 +147,7 @@ const mapState = ({lang}) => ({
 });
 const mapDispatch = dispatch => ({
   changeLang: lang => dispatch(changeLang(lang)),
+  changeTheme: theme => dispatch(changeTheme(theme)),
 });
 
 export default withRouter(

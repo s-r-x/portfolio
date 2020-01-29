@@ -1,24 +1,36 @@
 import React from 'react';
 import './index.less';
 import {connect} from 'react-redux';
-import dict from '../../translations';
+import dict from '@/translations';
 import Hi from './Hi';
+import cn from 'classnames';
 
-const AboutPage = ({lang}) => {
+const AboutPage = ({lang, theme}) => {
+  const isDark = theme === 'light';
   return (
     <section className="about">
       <Hi text={dict.about_hello[lang]} />
       <div className="about--inner">
-        <div className="about--left">
+        <div
+          className={cn('about--left', 'theme-dependent', isDark && 'is-dark')}>
           <h2>{dict.about_hello[lang]}</h2>
         </div>
         <div className="about--right">
           <div className="about--border" />
           <div className="about--content-overflow">
             <div className="about--content">
-              <p>{dict.about_first_p[lang]}</p>
-              <p>{dict.about_second_p[lang]}</p>
-              <div className="about--links">
+              <p className={cn('theme-dependent', isDark && 'is-dark')}>
+                {dict.about_first_p[lang]}
+              </p>
+              <p className={cn('theme-dependent', isDark && 'is-dark')}>
+                {dict.about_second_p[lang]}
+              </p>
+              <div
+                className={cn(
+                  'about--links',
+                  'theme-dependent',
+                  isDark && 'is-dark',
+                )}>
                 <a href="tg://resolve?domain=srx90">Telegram</a>
                 <a href="skype:ilyastrus?add">Skype</a>
                 <a href="https://github.com/s-r-x" target="_blank">
@@ -34,7 +46,8 @@ const AboutPage = ({lang}) => {
   );
 };
 
-const mapStateToProps = ({lang}) => ({
+const mapState = ({lang, theme}) => ({
   lang,
+  theme,
 });
-export default connect(mapStateToProps)(AboutPage);
+export default connect(mapState)(AboutPage);

@@ -2,10 +2,9 @@ import React, {useEffect} from 'react';
 import {rootStage, renderer} from '@/pixi';
 import {Container, Graphics} from 'pixi.js';
 import TweenLite from 'gsap/TweenLite';
-import { CURSOR_RADIUS as RADIUS } from '@/constants';
+import { CURSOR_RADIUS as RADIUS, ACCENT_COLOR as COLOR } from '@/constants';
 
 const SCREEN_OFFSET = -50;
-const COLOR = 0xffaaee;
 let border, circle, mask, container;
 const Cursor = props => {
   const onLinkEnter = () => {

@@ -1,3 +1,4 @@
+import { ACCENT_COLOR } from '@/constants';
 export const FONT = 'Avenir Heavy';
 export const FONT_STYLE = {
   fontFamily: FONT,
@@ -5,7 +6,7 @@ export const FONT_STYLE = {
   lineHeight: 0,
   fontWeight: 400,
   //letterSpacing: 2,
-  fill: 0xFFFFFF,
+  fill: ACCENT_COLOR,
   trim: true,
 };
 
