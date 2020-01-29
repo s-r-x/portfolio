@@ -20,12 +20,13 @@
     transition: border-color .4s ease;
     &:focus {
       border-bottom-color: white;
+      &::placeholder {
+        color: white;
+      }
     }
     &::placeholder {
       text-align: center;
     }
-  }
-  textarea {
   }
   &--form-sect {
     margin-bottom: 75px;

@@ -10,9 +10,11 @@ import {Expo} from 'gsap/EasePack';
 import {RESIZE_DELAY} from '../constants';
 import throttle from 'lodash.throttle';
 import ResizeObserver from 'resize-observer-polyfill';
+import {withRouter} from 'react-router-dom';
+import Hoverable from '@/components/Hoverable';
 
 const routes = [
-  {path: '/works', translationKey: 'menu_works'},
+  {path: '/', translationKey: 'menu_works'},
   {path: '/message', translationKey: 'menu_message'},
   {path: '/about', translationKey: 'menu_about'},
 ];
@@ -20,7 +22,9 @@ const routes = [
 const Li = ({to, text, isActive}) => {
   return (
     <li data-path={to} className={isActive ? 'is-active' : ''}>
-      <Link to={to}>{text}</Link>
+      <Hoverable>
+        <Link to={to}>{text}</Link>
+      </Hoverable>
     </li>
   );
 };
@@ -101,7 +105,7 @@ class Menu extends PureComponent {
             {routes.map(function({path, translationKey}) {
               return (
                 <Li
-                  isActive={activePath.startsWith(path)}
+                  isActive={activePath === path}
                   key={path}
                   to={path}
                   text={dict[translationKey][lang]}
@@ -138,7 +142,9 @@ const mapDispatch = dispatch => ({
   changeLang: lang => dispatch(changeLang(lang)),
 });
 
-export default connect(
-  mapState,
-  mapDispatch,
-)(Menu);
+export default withRouter(
+  connect(
+    mapState,
+    mapDispatch,
+  )(Menu),
+);

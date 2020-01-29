@@ -11,8 +11,8 @@ import {
 
 export const loadFont = onSuccess =>
   webfont.load({
-    google: {
-      families: [FONT + ':900:cyrillic', FONT + ':900'],
+    custom: {
+      families: ['Avenir Heavy'],
     },
     active: onSuccess,
   });

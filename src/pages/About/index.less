@@ -14,7 +14,21 @@
     max-width: 50%;
     margin-left: auto;
     padding-left: 23px;
-    border-left: 1px solid white;
+    position: relative;
+  }
+  &--border {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 1px;
+    background-color: white;
+  }
+  &--content {
+    
+  }
+  &--content-overflow {
+    overflow: hidden;
   }
   a {
     display: inline-block;

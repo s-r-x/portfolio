@@ -9,42 +9,58 @@ import {connect} from 'react-redux';
 import {Expo} from 'gsap/EasePack';
 import fragShader from './shader.frag';
 import vertShader from './shader.vert';
-import {renderer, ticker} from '@/pixi';
-const {Container, Rectangle} = PIXI;
-
-let filter;
-let stage;
+import {renderer, portfolioStage as stage} from '@/pixi';
+const {Rectangle, Graphics} = PIXI;
 
 class Thumb extends PureComponent {
-  constructor() {
-    super();
-    this.ref = React.createRef();
-    this.resizeHandler = throttle(this.resizeHandler.bind(this), RESIZE_DELAY);
-  }
+  filter = null;
+  ref = React.createRef();
   componentDidMount() {
-    if (!stage) {
-      stage = new Container();
-      this.initFilter();
-      this.resizeHandler();
-    }
-    ticker.add(this.onTick);
+    this.initFilter();
+    this.resizeHandler();
     window.addEventListener('resize', this.resizeHandler);
     if (window.hasOwnProperty('Hammer')) {
-      return this.initHammer();
-    }
-    import(/* webpackChunkName: "hammer" */ 'hammerjs').then(module => {
-      window.Hammer = module.default;
       this.initHammer();
-    });
+    } else {
+      import(/* webpackChunkName: "hammer" */ 'hammerjs').then(module => {
+        window.Hammer = module.default;
+        this.initHammer();
+      });
+    }
+    __ee__.on('transition/portfolio_exit', this.playExitAnimation);
   }
   componentWillUnmount() {
+    __ee__.off('transition/portfolio_exit', this.playExitAnimation);
     window.removeEventListener('resize', this.resizeHandler);
     this.hammer.destroy();
-    ticker.remove(this.onTick);
   }
-  onTick() {
-    renderer.render(stage);
-  }
+  playExitAnimation = () => {
+    const {activeSlide} = this.props;
+    const slides = window.portfolioTextures;
+    const oldTexture = slides[activeSlide];
+    const newTexture = PIXI.Loader.shared.resources.empty.texture;
+    this.filter.uniforms.texture1 = oldTexture;
+    this.filter.uniforms.texture2 = newTexture;
+    this.filter.uniforms.dispFactor = 0;
+    const len = slides.length - 1;
+    this.filter.uniforms.isNext = 1;
+    TweenLite.to(this.filter.uniforms, 1, {
+      ease: Expo.easeOut,
+      dispFactor: 1,
+    });
+  };
+  resizeHandler = throttle(() => {
+    const {slides, activeSlide} = this.props;
+    const width = this.ref.current.offsetWidth;
+    const bounds = this.ref.current.getBoundingClientRect();
+    const height = width / THUMB_RATIO;
+    clearContainer(stage);
+    const graphics = new Graphics();
+    stage.x = bounds.x;
+    stage.y = bounds.y;
+    graphics.drawRect(0, 0, width, height);
+    stage.addChild(graphics);
+  }, RESIZE_DELAY);
   initHammer() {
     const th = this;
     th.hammer = new Hammer(this.ref.current);
@@ -59,18 +75,26 @@ class Thumb extends PureComponent {
   initFilter() {
     const {activeSlide} = this.props;
     const slides = window.portfolioTextures;
-    if (!filter) {
-      filter = new PIXI.Filter(vertShader, fragShader, {
-        texture1: slides[activeSlide],
-        texture2: slides[activeSlide],
-        disp: PIXI.Loader.shared.resources.disp.texture,
-        dispFactor: 1,
-        effectFactor: 1,
-        isNext: 1,
-      });
-      filter.padding = 0;
-      stage.filters = [filter];
-    }
+    const slide = slides[activeSlide];
+    const oldTexture = slides[activeSlide];
+    const newTexture = PIXI.Loader.shared.resources.empty.texture;
+
+    this.filter = new PIXI.Filter(vertShader, fragShader, {
+      texture1: newTexture,
+      texture2: oldTexture,
+      disp: PIXI.Loader.shared.resources.disp.texture,
+      dispFactor: 0,
+      effectFactor: 1,
+      isNext: 0,
+    });
+    this.filter.padding = 0;
+    stage.filters = [this.filter];
+    this.props.animationStart();
+    TweenLite.to(this.filter.uniforms, 1, {
+      ease: Expo.easeOut,
+      dispFactor: 1,
+      onComplete: () => this.props.animationEnd(),
+    }).delay(0.6);
   }
   componentDidUpdate(prevProps) {
     const {activeSlide} = this.props;
@@ -80,35 +104,25 @@ class Thumb extends PureComponent {
     const slides = window.portfolioTextures;
     const newTexture = slides[activeSlide];
     const oldTexture = slides[prevProps.activeSlide];
-    filter.uniforms.texture1 = oldTexture;
-    filter.uniforms.texture2 = newTexture;
-    filter.uniforms.dispFactor = 0;
+    this.filter.uniforms.texture1 = oldTexture;
+    this.filter.uniforms.texture2 = newTexture;
+    this.filter.uniforms.dispFactor = 0;
     const len = slides.length - 1;
     if (activeSlide === 0 && prevProps.activeSlide === len) {
-      filter.uniforms.isNext = 1;
+      this.filter.uniforms.isNext = 1;
     } else if (activeSlide === len && prevProps.activeSlide === 0) {
-      filter.uniforms.isNext = 0;
+      this.filter.uniforms.isNext = 0;
     } else if (activeSlide > prevProps.activeSlide) {
-      filter.uniforms.isNext = 1;
+      this.filter.uniforms.isNext = 1;
     } else {
-      filter.uniforms.isNext = 0;
+      this.filter.uniforms.isNext = 0;
     }
 
-    TweenLite.to(filter.uniforms, 1, {
+    TweenLite.to(this.filter.uniforms, 1, {
       ease: Expo.easeOut,
       dispFactor: 1,
       onComplete: () => this.props.animationEnd(),
     });
-  }
-  resizeHandler() {
-    const {slides, activeSlide} = this.props;
-    const width = this.ref.current.offsetWidth;
-    const bounds = this.ref.current.getBoundingClientRect();
-    const height = width / THUMB_RATIO;
-    clearContainer(stage);
-    const graphics = new PIXI.Graphics();
-    graphics.drawRect(bounds.x, bounds.y, width, height);
-    stage.addChild(graphics);
   }
   render() {
     return <div className="works--thumb" ref={this.ref} />;

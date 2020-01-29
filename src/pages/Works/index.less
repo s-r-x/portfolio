@@ -19,6 +19,12 @@
    line-height: 1em;
    margin-top: 0;
   }
+  &--controls {
+    display: flex;
+    > div:first-child {
+      margin-right: 50px;
+    }
+  }
   &--desc {
     margin: 0;
   }
@@ -30,9 +36,6 @@
     &:hover {
       opacity: .6;
     }
-  }
-  &--prev {
-    margin-right: 10px;
   }
   &--link {
     transition: opacity .3s ease;

@@ -1,10 +1,10 @@
-export const FONT = 'Merriweather';
+export const FONT = 'Avenir Heavy';
 export const FONT_STYLE = {
   fontFamily: FONT,
   fontSize: 120,
   lineHeight: 0,
-  fontWeight: 900,
-  letterSpacing: 2,
+  fontWeight: 400,
+  //letterSpacing: 2,
   fill: 0xFFFFFF,
   trim: true,
 };

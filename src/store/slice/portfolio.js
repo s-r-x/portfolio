@@ -33,6 +33,9 @@ const portfolioSlice = createSlice({
         state.animating = true;
       }
     },
+    animationStart(state) {
+      state.animating = true;
+    },
     animationEnd(state) {
       state.animating = false;
     },
@@ -44,6 +47,7 @@ export const {
   nextSlide,
   prevSlide,
   animationEnd,
+  animationStart,
 } = portfolioSlice.actions;
 
 export default portfolioSlice.reducer;

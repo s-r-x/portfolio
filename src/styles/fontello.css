@@ -55,6 +55,8 @@
   /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
 }
  
+.icon-moon:before { content: '\e800'; } /* '' */
+.icon-sun:before { content: '\e801'; } /* '' */
 .icon-link-ext:before { content: '\f08e'; } /* '' */
 .icon-angle-left:before { content: '\f104'; } /* '' */
 .icon-angle-right:before { content: '\f105'; } /* '' */

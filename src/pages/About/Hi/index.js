@@ -1,7 +1,5 @@
 import React, {useRef, useEffect, useState, memo} from 'react';
 import * as PIXI from 'pixi.js';
-import TweenLite from 'gsap/TweenLite';
-import {Expo} from 'gsap/EasePack';
 import debounce from 'lodash.debounce';
 import './index.less';
 import {clearContainer, wait} from '@/utils';
@@ -9,40 +7,42 @@ import Particle from './Particle';
 import chunk from 'lodash.chunk';
 import {loadFont, createParticles, createTextureFromText} from './utils';
 import {TEXT_TOP_OFFSET, ACTIVE_CANVAS_BREAKPOINT} from './constants';
-import {renderer, ticker} from '@/pixi';
+import {renderer, ticker, aboutStage as stage} from '@/pixi';
+import TweenLite from 'gsap/TweenLite';
+import {Expo} from 'gsap/EasePack';
+import random from 'lodash.random';
 
 const {
   RenderTexture,
-  Container,
   Sprite,
   ParticleContainer,
   Rectangle,
   Text,
   TextStyle,
+  Graphics,
 } = PIXI;
 
 // TODO:: hide pixi canvas on resize < 1100px
 //
 let particleUpdater;
 let isFirstLoad = true;
-const WAIT_FIRST_LOAD = 800;
-const WAIT_LOADED = 500;
+const WAIT_FIRST_LOAD = 1000;
+const WAIT_LOADED = 600;
 const RESIZE_DELAY = 250;
-let stage;
 
+let container, mask;
 const Hi = memo(({text}) => {
   const ref = useRef();
   const [fontLoaded, setFontLoaded] = useState(false);
-  const [show, setShow] = useState(false);
+  //const [preventInteraction, setPreventInteraction] = useState(false);
   const renderText = () => {
     const $wrap = ref.current;
-    stage = new Container();
     if (particleUpdater) {
       ticker.remove(particleUpdater);
     }
     clearContainer(stage);
     const rt = createTextureFromText({text, renderer});
-    const container = createParticles({
+    container = createParticles({
       pixels: chunk(renderer.extract.pixels(rt), 4),
       texture: rt,
     });
@@ -52,6 +52,13 @@ const Hi = memo(({text}) => {
       .querySelector('.about--right')
       .getBoundingClientRect();
     stage.addChild(container);
+    const RAD = 5;
+    const graphics = new Graphics();
+    graphics.beginFill(0xffffff);
+    graphics.drawCircle(0, 0, RAD);
+    mask = graphics;
+    stage.addChild(mask);
+    stage.mask = mask;
     stage.x = descX - rt.width - 30;
     stage.y = descY + descHeight / 2 - rt.height / 2.5;
     particleUpdater = () => {
@@ -59,16 +66,40 @@ const Hi = memo(({text}) => {
       container.children.forEach(p => {
         p.__update(x - stage.x, y - stage.y);
       });
-      renderer.render(stage);
     };
     ticker.add(particleUpdater);
-    setShow(true);
+    mask.x = rt.width / 2 - RAD / 2;
+    mask.y = descHeight / 2 - RAD / 2;
+    TweenLite.to(mask.scale, 1.2, {
+      x: 80,
+      y: 80,
+      //ease: Expo.easeInOut,
+    });
+  };
+  const playExit = () => {
+    ticker.remove(particleUpdater);
+    if (particleUpdater) {
+      ticker.remove(particleUpdater);
+    }
+    if (mask) {
+      TweenLite.to(mask.scale, 0.6, {
+        x: 0,
+        y: 0,
+        //ease: Expo.easeIn,
+      });
+    }
   };
   const onResize = debounce(() => {
     renderText();
   }, RESIZE_DELAY);
   useEffect(() => {
-    loadFont(() => setFontLoaded(true));
+    loadFont(() => {
+      setFontLoaded(true);
+    });
+    __ee__.on('transition/about_exit', playExit);
+    return () => {
+      __ee__.off('transition/about_exit', playExit);
+    };
   }, []);
   useEffect(() => {
     if (fontLoaded && ref.current.offsetWidth > ACTIVE_CANVAS_BREAKPOINT) {
@@ -88,7 +119,7 @@ const Hi = memo(({text}) => {
       };
     }
   }, [text, fontLoaded]);
-  return <div className={show ? 'hi visible' : 'hi'} ref={ref} />;
+  return <div className="hi visible" ref={ref} />;
 });
 
 export default Hi;
