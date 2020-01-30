@@ -2,18 +2,21 @@ import React, {useCallback, useRef} from 'react';
 import './index.less';
 import TweenLite from 'gsap/TweenLite';
 import {Vector, toDeg} from 'contra.js';
+import {IS_MOBILE} from '@/constants';
 
 const Hoverable = props => {
   const ref = useRef();
   const childRef = useRef();
   // props radius x radius y
   const onMouseEnter = useCallback(() => {
+    if (IS_MOBILE) return;
     __ee__.emit(props.event);
     if (props.magnet) {
       window.addEventListener('mousemove', onMouseMove);
     }
   }, []);
   const onMouseLeave = useCallback(() => {
+    if (IS_MOBILE) return;
     __ee__.emit(props.leaveEvent);
     if (props.magnet) {
       window.removeEventListener('mousemove', onMouseMove);
@@ -24,6 +27,7 @@ const Hoverable = props => {
     }
   }, []);
   const onMouseMove = useCallback(({clientX, clientY}) => {
+    if (IS_MOBILE) return;
     const {x, y, width, height} = childRef.current.getBoundingClientRect();
     const mouse = new Vector(clientX, clientY);
     const child = new Vector(x + width / 2, y + height / 2);

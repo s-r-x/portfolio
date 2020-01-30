@@ -31,8 +31,8 @@ export default [
       en: 'Owl',
     },
     desc: {
-      ru: 'Школа английского языка',
-      en: 'English language school',
+      ru: 'Курсы английского языка',
+      en: 'Learning english courses',
     },
     thumb: '/Owl.jpg',
     link: 'http://owl.s-r-x.com/',

@@ -21,7 +21,7 @@ export const renderer = new Renderer(window.innerWidth, window.innerHeight, {
 window.addEventListener(
   'resize',
   throttle(() => {
-    renderer.resize(document.body.offsetWidth, document.body.offsetHeight);
+    renderer.resize(window.innerWidth, window.innerHeight);
   }, 250),
 );
 export const ticker = Ticker.shared;

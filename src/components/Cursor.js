@@ -1,25 +1,31 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {rootStage, renderer} from '@/pixi';
 import {Container, Graphics} from 'pixi.js';
 import TweenLite from 'gsap/TweenLite';
-import { CURSOR_RADIUS as RADIUS, ACCENT_COLOR as COLOR } from '@/constants';
+import {
+  CURSOR_RADIUS as RADIUS,
+  ACCENT_COLOR as COLOR,
+  IS_MOBILE,
+} from '@/constants';
 
 const SCREEN_OFFSET = -50;
-let border, circle, mask, container;
+let border, circle, container;
 const Cursor = props => {
+  const circleRef = useRef();
   const onLinkEnter = () => {
-    TweenLite.to(mask.scale, .25, {
-      x: 1, 
+    TweenLite.to(circleRef.current.scale, 0.25, {
+      x: 1,
       y: 1,
     });
   };
   const onLinkLeave = () => {
-    TweenLite.to(mask.scale, .25, {
-      x: 0, 
+    TweenLite.to(circleRef.current.scale, 0.25, {
+      x: 0,
       y: 0,
     });
   };
   useEffect(() => {
+    if (IS_MOBILE) return;
     container = new Container();
     border = new Graphics();
     border.lineStyle(2, COLOR, 1, 0);
@@ -29,14 +35,9 @@ const Cursor = props => {
     circle.beginFill(COLOR);
     circle.drawCircle(0, 0, RADIUS);
     circle.endFill();
+    circle.scale.set(0, 0);
+    circleRef.current = circle;
     container.addChild(circle);
-    mask = new Graphics();
-    mask.beginFill(0xffffff);
-    mask.drawCircle(0, 0, RADIUS);
-    mask.endFill();
-    container.addChild(mask);
-    circle.mask = mask;
-    mask.scale.set(0, 0);
     container.x = SCREEN_OFFSET;
     rootStage.addChild(container);
     window.addEventListener('mousemove', e => {

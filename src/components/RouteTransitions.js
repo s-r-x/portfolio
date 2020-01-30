@@ -4,6 +4,7 @@ import TweenLite from 'gsap/TweenLite';
 import {Expo} from 'gsap/EasePack';
 import TimelineLite from 'gsap/TimelineLite';
 import {portfolioStage} from '@/pixi';
+import { IS_MOBILE } from '@/constants';
 
 const TIMEOUT = 1200;
 const DURATION = 0.6;
@@ -69,6 +70,7 @@ function playMessage(node) {
   ).to($btn, DURATION, {opacity: 1}, DELAY);
 }
 function play(pathname, node) {
+  if(IS_MOBILE) return;
   switch (pathname) {
     case '/':
       return playPortfolio(node);
@@ -115,6 +117,7 @@ function exitMessage(node) {
   }).to($btn, DURATION, {opacity: 0}, 0);
 }
 function playExit(pathname, node) {
+  if(IS_MOBILE) return;
   switch (pathname) {
     case '/':
       return exitPortfolio(node);

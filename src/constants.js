@@ -6,4 +6,7 @@ export const RETINA_PREFIX = '@2x';
 
 export const CURSOR_RADIUS = 16;
 
-export const ACCENT_COLOR = 0xE91E63;
+export const ACCENT_COLOR = 0xe91e63;
+
+const { matches: hoverSupport } = window.matchMedia("(hover: hover)");
+export const IS_MOBILE = !hoverSupport;
