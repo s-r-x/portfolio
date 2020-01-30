@@ -7,7 +7,7 @@ import {connect} from 'react-redux';
 import {initSlides} from '@/store/slice/portfolio';
 import {loader} from '@/loader';
 import list from '@/projects';
-import { theme } from '@/pixi';
+import theme from '@/pixi/theme';
 
 const App = props => {
   useEffect(() => {

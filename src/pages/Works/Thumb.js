@@ -42,10 +42,8 @@ class Thumb extends PureComponent {
     this.filter.uniforms.texture1 = oldTexture;
     this.filter.uniforms.texture2 = newTexture;
     this.filter.uniforms.dispFactor = 0;
-    const len = slides.length - 1;
     this.filter.uniforms.isNext = 1;
-    TweenLite.to(this.filter.uniforms, 1, {
-      ease: Expo.easeOut,
+    TweenLite.to(this.filter.uniforms, .65, {
       dispFactor: 1,
     });
   };

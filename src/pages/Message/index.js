@@ -3,6 +3,8 @@ import './index.less';
 import {connect} from 'react-redux';
 import dict from '@/translations';
 import {MAIL_URL} from '@/constants';
+import cn from 'classnames';
+import Hoverable from '@/components/Hoverable';
 
 const Spinner = () => (
   <div className="spinner">
@@ -59,36 +61,57 @@ class MessagePage extends PureComponent {
     xhr.onloadend = () => th.setState({isSubmitting: false});
   };
   render() {
-    const {lang} = this.props;
+    const {lang, theme} = this.props;
     const {email, message, isSubmitting} = this.state;
+    const isDark = theme === 'light';
     return (
       <section className="message">
         <form onSubmit={this.submit} method="POST">
           <div className="message--form-sect">
             <label htmlFor="message_email">{dict.message_email[lang]}</label>
-            <input
-              onChange={this.emailChange}
-              type="email"
-              id="message_email"
-              value={email}
-              required
-              placeholder={dict.message_email[lang]}
-            />
+            <Hoverable>
+              <input
+                className={cn(
+                  'email-input',
+                  isDark && 'is-dark',
+                  'theme-dependent',
+                )}
+                onChange={this.emailChange}
+                type="email"
+                id="message_email"
+                value={email}
+                required
+                placeholder={dict.message_email[lang]}
+              />
+            </Hoverable>
           </div>
           <div className="message--form-sect">
             <label htmlFor="message_text">{dict.message_payload[lang]}</label>
-            <textarea
-              required
-              onChange={this.messageChange}
-              id="message_text"
-              value={message}
-              placeholder={dict.message_payload[lang]}
-            />
+            <Hoverable>
+              <textarea
+                required
+                className={cn(
+                  'message-input',
+                  isDark && 'is-dark',
+                  'theme-dependent',
+                )}
+                onChange={this.messageChange}
+                id="message_text"
+                value={message}
+                placeholder={dict.message_payload[lang]}
+              />
+            </Hoverable>
           </div>
           {isSubmitting ? (
             <Spinner />
           ) : (
-            <button type="submit">{dict.message_send[lang]}</button>
+            <Hoverable style={{display: 'inline-block'}}>
+              <button
+                className={cn(isDark && 'is-dark', 'theme-dependent')}
+                type="submit">
+                {dict.message_send[lang]}
+              </button>
+            </Hoverable>
           )}
         </form>
       </section>
@@ -96,7 +119,8 @@ class MessagePage extends PureComponent {
   }
 }
 
-const mapState = ({lang}) => ({
+const mapState = ({lang, theme}) => ({
   lang,
+  theme,
 });
 export default connect(mapState)(MessagePage);

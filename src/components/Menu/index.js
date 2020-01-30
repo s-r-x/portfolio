@@ -13,7 +13,7 @@ import ResizeObserver from 'resize-observer-polyfill';
 import {withRouter} from 'react-router-dom';
 import Hoverable from '@/components/Hoverable';
 import ThemeToggler from './ThemeToggler';
-import { changeTheme } from '@/store/slice/theme';
+import {changeTheme} from '@/store/slice/theme';
 
 const routes = [
   {path: '/', translationKey: 'menu_works'},
@@ -25,7 +25,9 @@ const Li = ({to, text, isActive}) => {
   return (
     <li data-path={to} className={isActive ? 'is-active' : ''}>
       <Hoverable>
-        <Link className="theme-dependent" to={to}>{text}</Link>
+        <Link className="theme-dependent" to={to}>
+          {text}
+        </Link>
       </Hoverable>
     </li>
   );
@@ -121,20 +123,24 @@ class Menu extends PureComponent {
             <ThemeToggler changeTheme={this.props.changeTheme} />
           </div>
           <div className="lang-toggler theme-dependent">
-            <button
-              className={lang === 'en' ? 'is-active' : ''}
-              aria-label="Change language to english"
-              onClick={() => this.props.changeLang('en')}>
-              en{' '}
-            </button>
+            <Hoverable style={{display: 'inline-block'}}>
+              <button
+                className={lang === 'en' ? 'is-active' : ''}
+                aria-label="Change language to english"
+                onClick={() => this.props.changeLang('en')}>
+                en{' '}
+              </button>
+            </Hoverable>
             <span className="delimiter">/</span>
-            <button
-              className={lang === 'ru' ? 'is-active' : ''}
-              aria-label="Изменить язык на русский"
-              onClick={() => this.props.changeLang('ru')}>
-              {' '}
-              ru
-            </button>
+            <Hoverable style={{display: 'inline-block'}}>
+              <button
+                className={lang === 'ru' ? 'is-active' : ''}
+                aria-label="Изменить язык на русский"
+                onClick={() => this.props.changeLang('ru')}>
+                {' '}
+                ru
+              </button>
+            </Hoverable>
           </div>
         </div>
       </div>

@@ -33,21 +33,40 @@ function playAbout(node) {
   const $content = node.querySelector('.about--content');
   tl.set($border, {height: 0});
   tl.set($content, {y: '100%'});
-  tl.to($border, DURATION, {
-    height: '100%',
-    ease: Expo.easeOut,
-  }).to(
+  tl.to(
+    $border,
+    DURATION,
+    {
+      height: '100%',
+      ease: Expo.easeOut,
+    },
+    DELAY,
+  ).to(
     $content,
     DURATION,
     {
       y: '0%',
       ease: Expo.easeOut,
     },
-    0,
+    DELAY,
   );
 }
 function playMessage(node) {
-  console.log('playMessage');
+  const $input = node.querySelector('.message--form-sect input');
+  const $textarea = node.querySelector('.message--form-sect textarea');
+  const $btn = node.querySelector('button');
+  const tl = new TimelineLite();
+  TweenLite.set([$input, $textarea], {x: '-100%'});
+  TweenLite.set($btn, {opacity: 0});
+  tl.to(
+    [$input, $textarea],
+    DURATION,
+    {
+      x: '0%',
+      ease: Expo.easeInOut,
+    },
+    DELAY,
+  ).to($btn, DURATION, {opacity: 1}, DELAY);
 }
 function play(pathname, node) {
   switch (pathname) {
@@ -73,19 +92,28 @@ function exitAbout(node) {
   const $content = node.querySelector('.about--content');
   tl.to($border, DURATION, {
     height: 0,
-    ease,
+    ease: Expo.easeInOut,
   }).to(
     $content,
     DURATION,
     {
       y: '100%',
-      ease,
+      ease: Expo.easeInOut,
     },
     0,
   );
   __ee__.emit('transition/about_exit');
 }
-function exitMessage(node) {}
+function exitMessage(node) {
+  const $input = node.querySelector('.message--form-sect input');
+  const $textarea = node.querySelector('.message--form-sect textarea');
+  const $btn = node.querySelector('button');
+  const tl = new TimelineLite();
+  tl.to([$input, $textarea], DURATION, {
+    x: '-100%',
+    ease: Expo.easeInOut,
+  }).to($btn, DURATION, {opacity: 0}, 0);
+}
 function playExit(pathname, node) {
   switch (pathname) {
     case '/':

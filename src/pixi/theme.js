@@ -1,42 +1,11 @@
 import {
-  Renderer,
-  Ticker,
   Container,
   Loader,
   Sprite,
   TilingSprite,
   Graphics,
 } from 'pixi.js';
-import throttle from 'lodash.throttle';
-
-export const renderer = new Renderer(window.innerWidth, window.innerHeight, {
-  view: document.getElementById('canvas'),
-  transparent: true,
-  autoResize: true,
-  pixelRatio: window.devicePixelRatio,
-  // TODO:: check performance, but without it circle cursor looks ridiculous
-  antialias: true,
-});
-// TODO:: do we need it?
-window.addEventListener(
-  'resize',
-  throttle(() => {
-    renderer.resize(document.body.offsetWidth, document.body.offsetHeight);
-  }, 250),
-);
-export const ticker = Ticker.shared;
-ticker.autoStart = true;
-
-export const rootStage = new Container();
-export const portfolioStage = new Container();
-export const themeStage = new Container();
-export const aboutStage = new Container();
-rootStage.addChild(themeStage);
-rootStage.addChild(portfolioStage);
-rootStage.addChild(aboutStage);
-ticker.add(() => {
-  renderer.render(rootStage);
-});
+import {themeStage} from '.';
 
 class Theme {
   constructor(stage) {
@@ -48,6 +17,7 @@ class Theme {
     this.darkMask;
     this.lightMask;
     this.MASK_RADIUS = 100;
+    this.theme = 'dark';
   }
   _createMask() {
     const mask = new Graphics();
@@ -55,7 +25,13 @@ class Theme {
     mask.drawCircle(0, 0, this.MASK_RADIUS);
     mask.endFill();
     return mask;
-  }
+  };
+  get activeMask() {
+    return this.theme === 'dark' ? this.lightMask : this.darkMask;
+  };
+  get secondaryMask() {
+    return this.theme === 'dark' ? this.darkMask : this.lightMask;
+  };
   bootstrap() {
     this.darkTxt = Loader.shared.resources.bg_dark.texture;
     this.lightTxt = Loader.shared.resources.bg_light.texture;
@@ -81,5 +57,23 @@ class Theme {
     this.lightMask = lightMask;
     this.lightSprite.mask = lightMask;
   }
+  swapBgs() {
+    const activeMask = this.activeMask;
+    const anotherMask = this.secondaryMask;
+    const {children} = this.stage;
+    const len = children.length;
+    const hiddenIndex = len - 2;
+    const visibleIndex = len - 1;
+    const hiddenSprite = children[hiddenIndex];
+    const visibleSprite = children[visibleIndex];
+
+    activeMask.scale.set(0, 0);
+    visibleSprite.mask = null;
+
+    anotherMask.scale.set(0, 0);
+    hiddenSprite.mask = anotherMask;
+    this.stage.children.splice(hiddenIndex, 1);
+    this.stage.children.push(hiddenSprite);
+  }
 }
-export const theme = new Theme(themeStage);
+export default new Theme(themeStage);

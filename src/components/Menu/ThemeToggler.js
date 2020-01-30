@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {theme as pixiTheme} from '@/pixi';
+import pixiTheme from '@/pixi/theme';
 import TweenLite from 'gsap/TweenLite';
 import {Vector} from 'contra.js';
 import Hoverable from '@/components/Hoverable';
@@ -12,11 +12,8 @@ const ThemeToggler = props => {
     setChanging(true);
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
-    //__ee__.emit('change_theme', theme);
     const bounds = ref.current.getBoundingClientRect();
-    const mask = theme === 'dark' ? pixiTheme.lightMask : pixiTheme.darkMask;
-    const anotherMask =
-      theme === 'dark' ? pixiTheme.darkMask : pixiTheme.lightMask;
+    const mask = pixiTheme.activeMask;
     const maskPos = new Vector(
       bounds.x + bounds.width / 2,
       bounds.y + bounds.height / 2,
@@ -56,21 +53,8 @@ const ThemeToggler = props => {
       },
       onComplete() {
         setChanging(false);
-        const {children} = pixiTheme.stage;
-        const len = children.length;
-        const hiddenIndex = len - 2;
-        const visibleIndex = len - 1;
-        const hiddenSprite = children[hiddenIndex];
-        const visibleSprite = children[visibleIndex];
-
-        mask.scale.set(0, 0);
-        visibleSprite.mask = null;
-
-        anotherMask.scale.set(0, 0);
-        hiddenSprite.mask = anotherMask;
-        pixiTheme.stage.children.splice(hiddenIndex, 1);
-        pixiTheme.stage.children.push(hiddenSprite);
-
+        pixiTheme.swapBgs();
+        pixiTheme.theme = newTheme;
         props.changeTheme(newTheme);
       },
     });

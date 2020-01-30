@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import dict from '@/translations';
 import Hi from './Hi';
 import cn from 'classnames';
+import Hoverable from '@/components/Hoverable';
 
 const AboutPage = ({lang, theme}) => {
   const isDark = theme === 'light';
@@ -25,19 +26,21 @@ const AboutPage = ({lang, theme}) => {
               <p className={cn('theme-dependent', isDark && 'is-dark')}>
                 {dict.about_second_p[lang]}
               </p>
-              <div
-                className={cn(
-                  'about--links',
-                  'theme-dependent',
-                  isDark && 'is-dark',
-                )}>
-                <a href="tg://resolve?domain=srx90">Telegram</a>
-                <a href="skype:ilyastrus?add">Skype</a>
-                <a href="https://github.com/s-r-x" target="_blank">
-                  Github
-                </a>
-                <a href="mailto:strax1990@gmail.com">Email</a>
-              </div>
+              <Hoverable style={{display: 'inline-block'}}>
+                <div
+                  className={cn(
+                    'about--links',
+                    'theme-dependent',
+                    isDark && 'is-dark',
+                  )}>
+                  <a href="tg://resolve?domain=srx90">Telegram</a>
+                  <a href="skype:ilyastrus?add">Skype</a>
+                  <a href="https://github.com/s-r-x" target="_blank">
+                    Github
+                  </a>
+                  <a href="mailto:strax1990@gmail.com">Email</a>
+                </div>
+              </Hoverable>
             </div>
           </div>
         </div>
