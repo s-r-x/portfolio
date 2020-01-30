@@ -20,6 +20,7 @@ const App = props => {
       );
       window.portfolioTextures = textures;
       theme.bootstrap();
+      theme.listenResize();
       props.initSlides();
     });
   }, []);

@@ -1,11 +1,8 @@
-import {
-  Container,
-  Loader,
-  Sprite,
-  TilingSprite,
-  Graphics,
-} from 'pixi.js';
+import {Container, Loader, Sprite, TilingSprite, Graphics} from 'pixi.js';
 import {themeStage} from '.';
+import {clearContainer} from '@/utils';
+import debounce from 'lodash.debounce';
+import {RESIZE_DELAY} from '@/constants';
 
 class Theme {
   constructor(stage) {
@@ -19,19 +16,12 @@ class Theme {
     this.MASK_RADIUS = 100;
     this.theme = 'dark';
   }
-  _createMask() {
-    const mask = new Graphics();
-    mask.beginFill(0xffffff);
-    mask.drawCircle(0, 0, this.MASK_RADIUS);
-    mask.endFill();
-    return mask;
-  };
   get activeMask() {
     return this.theme === 'dark' ? this.lightMask : this.darkMask;
-  };
+  }
   get secondaryMask() {
     return this.theme === 'dark' ? this.darkMask : this.lightMask;
-  };
+  }
   bootstrap() {
     this.darkTxt = Loader.shared.resources.bg_dark.texture;
     this.lightTxt = Loader.shared.resources.bg_light.texture;
@@ -57,6 +47,9 @@ class Theme {
     this.lightMask = lightMask;
     this.lightSprite.mask = lightMask;
   }
+  listenResize() {
+    window.addEventListener('resize', debounce(this._resize, RESIZE_DELAY));
+  }
   swapBgs() {
     const activeMask = this.activeMask;
     const anotherMask = this.secondaryMask;
@@ -75,5 +68,19 @@ class Theme {
     this.stage.children.splice(hiddenIndex, 1);
     this.stage.children.push(hiddenSprite);
   }
+  _createMask() {
+    const mask = new Graphics();
+    mask.beginFill(0xffffff);
+    mask.drawCircle(0, 0, this.MASK_RADIUS);
+    mask.endFill();
+    return mask;
+  }
+  _resize = () => {
+    clearContainer(this.stage);
+    this.bootstrap();
+    if (this.theme === 'light') {
+      this.swapBgs();
+    }
+  };
 }
 export default new Theme(themeStage);

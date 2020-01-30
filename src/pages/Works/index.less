@@ -1,10 +1,6 @@
 @import '../../styles/vars.less';
 
 .works {
-  &--thumb {
-    width: 700px;
-    height: 350px;
-  }
   &--container {
     width: 700px;
     position: relative;
@@ -73,10 +69,6 @@
       max-width: 600px;
       width: 100%;
     }
-    &--thumb {
-      width: 600px;
-      height: 300px;
-    }
     &--text {
       text-align: center;
       margin-top: 0;
@@ -107,5 +99,11 @@
     &--nav {
       padding: 0 15px;
     }
+  &--controls {
+    display: flex;
+    > div:first-child {
+      margin-right: 20px;
+    }
+  }
   }
 }

@@ -43,7 +43,6 @@ class Portfolio {
   initialRender({onStart, onComplete, slideIndex}) {
     const activeTexture = this.slides[slideIndex];
     const emptyTexture = this.emptyTexture;
-    onStart();
     this.filter.uniforms.texture1 = emptyTexture;
     this.filter.uniforms.texture2 = activeTexture;
     if (this.firstRender) {
@@ -51,6 +50,7 @@ class Portfolio {
       this._render();
       this.firstRender = false;
     } else {
+      onStart();
       this._play({delay: 0.6, duration: 0.6, onComplete});
     }
   }

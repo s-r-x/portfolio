@@ -7,7 +7,7 @@ import {
   TilingSprite,
   Graphics,
 } from 'pixi.js';
-import throttle from 'lodash.throttle';
+import debounce from 'lodash.debounce';
 
 export const renderer = new Renderer(window.innerWidth, window.innerHeight, {
   view: document.getElementById('canvas'),
@@ -17,10 +17,9 @@ export const renderer = new Renderer(window.innerWidth, window.innerHeight, {
   // TODO:: check performance, but without it circle cursor looks ridiculous
   antialias: true,
 });
-// TODO:: do we need it?
 window.addEventListener(
   'resize',
-  throttle(() => {
+  debounce(() => {
     renderer.resize(window.innerWidth, window.innerHeight);
   }, 250),
 );
