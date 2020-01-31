@@ -1,6 +1,6 @@
 import { Loader } from 'pixi.js';
-import { normalizeThumbPath } from './utils';
-import projects from './projects';
+import { normalizeThumbPath } from '@/utils';
+import projects from '@/projects';
 export const loader = Loader.shared;
 
 export default function loadAssets(onload) {

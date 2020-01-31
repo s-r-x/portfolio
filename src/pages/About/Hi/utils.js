@@ -51,5 +51,3 @@ export const createTextureFromText = ({text, renderer}) => {
   textContainer.destroy();
   return rt;
 };
-
-export const mapNumber = (x, a, b, c, d) => (x - a) * ((d - c) / (b - a)) + c;

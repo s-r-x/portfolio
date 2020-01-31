@@ -1,11 +1,10 @@
-require('normalize.css/normalize.css');
 require('../styles/index.less');
 
 import React, {useEffect} from 'react';
 import Router from './Router';
 import {connect} from 'react-redux';
 import {initSlides} from '@/store/slice/portfolio';
-import {loader} from '@/loader';
+import {loader} from '@/pixi/loader';
 import list from '@/projects';
 import theme from '@/pixi/theme';
 

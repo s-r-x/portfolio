@@ -75,6 +75,7 @@ class Portfolio {
     const graphics = new Graphics();
     graphics.drawRect(0, 0, width, height);
     this.stage.addChild(graphics);
+    this.renderer.resize(width, height);
     this.renderer.render(this.stage);
   }
   _initFilter() {

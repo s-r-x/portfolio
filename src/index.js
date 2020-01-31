@@ -8,7 +8,7 @@ import App from '@/containers/App';
 import { Provider } from 'react-redux';
 import  store  from './store';
 import CSSPlugin from 'gsap/CSSPlugin';
-import loadAssets, { loader } from './loader';
+import loadAssets from '@/pixi/loader';
 import hidePreloader from './preloader';
 const EventEmitter = require('wolfy87-eventemitter');
 window.__ee__ = new EventEmitter();
